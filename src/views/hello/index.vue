@@ -5,6 +5,7 @@
       <img src="~@assets/img/logo.png">
       <h1 v-text="msg"></h1>
       <h2 v-text="message"></h2>
+      <send-code class="btn btn-default" :start="start" @click.native="sendCode"></send-code>
       <div class="demo">
         <h3>方法示例</h3>
         <pre>
@@ -62,16 +63,20 @@
    */
   // 工具类
   import { formatDate } from 'utils';
+  import { SendCode } from '@/components';
   import api from 'services';
 
   export default {
     data () {
       return {
         msg: 'Welcome to Your Vue.js 3.x App',
-        message: '现在时间是：' + formatDate(Date.now())
+        message: '现在时间是：' + formatDate(Date.now()),
+        start: false
       };
     },
-
+    components: {
+      SendCode
+    },
     created () {
       console.log(api);
       this.movieComingSoon();
@@ -88,6 +93,11 @@
         }).catch((err) => {
           console.log('接口请求异常：' + err);
         });
+      },
+      sendCode () {
+        setTimeout(() => {
+          this.start = true;
+        }, 1000);
       }
     }
   };

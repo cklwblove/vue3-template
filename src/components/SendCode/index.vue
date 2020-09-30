@@ -1,17 +1,12 @@
 <template>
-  <button :disabled="isStart" v-text="text"></button>
+  <button :disabled="state.isStart" v-text="state.text"></button>
 </template>
 
 <script>
+  import { reactive, onMounted, onUnmounted, watch } from 'vue';
+
   export default {
     name: 'SendCode',
-    data () {
-      return {
-        timer: null,
-        isStart: false,
-        text: '获取短信验证码'
-      };
-    },
     props: {
       initText: {
         type: String,
@@ -31,43 +26,60 @@
         type: String,
         default: '重新获取验证码'
       },
-      value: {
+      start: {
         type: Boolean,
         default: false
       }
     },
-    watch: {
-      value (val) {
-        this.isStart = val;
-        val && this.run();
+    setup (props, { emit }) {
+      const state = reactive({
+        isStart: false,
+        text: '获取短信验证码'
+      });
+      let timer = null;
+
+      function stop () {
+        state.text = props.resetText;
+        emit('input', false);
+        clearInterval(timer);
       }
-    },
-    mounted () {
-      if (this.initText) {
-        this.text = this.initText;
+
+      function getText (second) {
+        return props.runText.replace(/\{([^{]*?)%s(.*?)\}/g, second);
       }
-    },
-    destroyed () {
-      this.stop();
-    },
-    methods: {
-      run () {
-        let second = this.second;
-        this.text = this.getText(this.second);
-        this.timer = setInterval(() => {
+
+      function run () {
+        let second = props.second;
+
+        state.text = getText(props.second);
+        timer = setInterval(() => {
           second--;
-          this.text = this.getText(second);
-          second <= 0 && this.stop();
+          state.text = getText(second);
+          second <= 0 && stop();
         }, 1000);
-      },
-      stop () {
-        this.text = this.resetText;
-        this.$emit('input', false);
-        clearInterval(this.timer);
-      },
-      getText (second) {
-        return this.runText.replace(/\{([^{]*?)%s(.*?)\}/g, second);
       }
+
+      watch(
+        () => props.start,
+        (val) => {
+          state.isStart = val;
+          val && run();
+        }
+      );
+
+      onMounted(() => {
+        if (props.initText) {
+          state.text = props.initText;
+        }
+      });
+
+      onUnmounted(() => {
+        stop();
+      });
+
+      return {
+        state
+      };
     }
   };
 </script>

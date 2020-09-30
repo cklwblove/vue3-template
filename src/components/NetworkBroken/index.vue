@@ -17,10 +17,14 @@
 
 <script>
   export default {
-    methods: {
-      refresh () {
+    setup () {
+      function refresh () {
         window.location.reload();
       }
+
+      return {
+        refresh
+      };
     }
   };
 </script>
