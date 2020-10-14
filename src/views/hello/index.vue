@@ -64,7 +64,6 @@
   // 工具类
   import { formatDate } from 'utils';
   import { SendCode } from '@/components';
-  import api from 'services';
 
   export default {
     data () {
@@ -78,14 +77,13 @@
       SendCode
     },
     created () {
-      console.log(api);
       this.movieComingSoon();
     },
 
     methods: {
       movieComingSoon () {
         const data = {};
-        api.octocat({
+        this.$services.octocat({
           method: 'get',
           data
         }).then((res) => {
