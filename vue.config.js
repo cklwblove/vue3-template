@@ -206,13 +206,22 @@ module.exports = {
         config => config.devtool('cheap-eval-source-map')
       );
 
-    // runtime.js 内联的形式嵌入
     config
       .plugin('preload')
-      .tap(args => {
-        args[0].fileBlacklist.push(/runtime\./);
-        return args;
-      });
+      .tap(() => [
+        {
+          rel: 'preload',
+          // to ignore runtime.js
+          // https://github.com/vuejs/vue-cli/blob/dev/packages/@vue/cli-service/lib/config/app.js#L171
+          fileBlacklist: [/\.map$/, /hot-update\.js$/, /runtime\..*\.js$/],
+          include: 'initial'
+        }
+      ]);
+
+    // when there are many pages, it will cause too many meaningless requests
+    config
+      .plugins
+      .delete('prefetch');
 
     // plugin
     // webpack-html-plugin
