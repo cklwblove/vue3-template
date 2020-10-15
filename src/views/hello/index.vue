@@ -5,6 +5,9 @@
       <img src="~@assets/img/logo.png">
       <h1 v-text="msg"></h1>
       <h2 v-text="message"></h2>
+      <!--      svg 写法示例-->
+      <svg-icon :data="cat"></svg-icon>
+      <!--      组件引用示例-->
       <send-code class="btn btn-default" :start="start" @click.native="sendCode"></send-code>
       <div class="demo">
         <h3>方法示例</h3>
@@ -64,10 +67,12 @@
   // 工具类
   import { formatDate } from 'utils';
   import { SendCode } from '@/components';
+  import cat from '@icon/cat.svg';
 
   export default {
     data () {
       return {
+        cat,
         msg: 'Welcome to Your Vue.js 3.x App',
         message: '现在时间是：' + formatDate(Date.now()),
         start: false

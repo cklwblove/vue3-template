@@ -7,9 +7,10 @@ import router from './router';
 import FUNS from '@/services';
 import './router/router.interceptor';
 import './components/global';
-import './icons';
 import './services';
 import './vendor/vant';
+import { VueSvgIconPlugin } from '@yzfe/vue3-svgicon';
+import '@yzfe/svgicon/lib/svgicon.css';
 
 import './assets/style/app.less';
 
@@ -18,7 +19,11 @@ const app = createApp(App);
 app.config.globalProperties.$services = FUNS;
 
 // use 插件
-app.use(router)
+app
+  .use(router)
+  .use(VueSvgIconPlugin, {
+    tagName: 'svg-icon'
+  });
 
 // 挂载
 app.mount('#app');
