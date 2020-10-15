@@ -6,7 +6,6 @@ import App from './App.vue';
 import router from './router';
 import FUNS from '@/services';
 import './router/router.interceptor';
-import './services';
 import './pwa/register-service-worker';
 import './vendor/vant';
 import { VueSvgIconPlugin } from '@yzfe/vue3-svgicon';
