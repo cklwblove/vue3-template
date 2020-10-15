@@ -5,10 +5,7 @@
       <img src="~@assets/img/logo.png">
       <h1 v-text="msg"></h1>
       <h2 v-text="message"></h2>
-      <!--      svg 写法示例-->
       <svg-icon :data="cat"></svg-icon>
-      <!--      组件引用示例-->
-      <send-code class="btn btn-default" :start="start" @click.native="sendCode"></send-code>
       <div class="demo">
         <h3>方法示例</h3>
         <pre>
@@ -19,35 +16,36 @@
               &lt;p v-text=&quot;msg&quot;&gt;&lt;/p&gt;
             &lt;/div&gt;
           &lt;/template&gt;
-          &lt;script&gt;
-            /**
-            * 以下仅为事例代码，可以随意扩展修改
-            */
 
+          &lt;script lang=&quot;ts&quot;&gt;
+            /**
+             * 以下仅为事例代码，可以随意扩展修改
+             */
+            import {Component, Vue} from &#x27;vue-property-decorator&#x27;;
             // 工具类
             import {formatDate} from &#x27;utils&#x27;;
 
-            export default {
-              data() {
-                return {
-                  msg: &#x27;Welcome to Your Vue.js App&#x27;,
-                  start: false
-                }
-              },
-              created() {
+            @Component
+            export default class Hello extends Vue {
+              private msg: string = &#x27;Welcome to Your Vue.js + TypeScript App&#x27;;
+              private message: string = &#x60;现在时间是：${formatDate(Date.now())}&#x60;;
+
+              private created() {
                 this.movieComingSoon();
-              },
-              methods: {
-                getTenantInfo() {
-                  // 接口请求示例
-                  const data = {};
-                  this.$services.comingSoon({data}).then((res) =&gt; {
-                    console.log(&#x27;接口请求成功：&#x27; + JSON.stringify(res, null, 2));
-                  }).catch((err) => {
-                    console.log(&#x27;接口请求异常：&#x27; + err);
-                  });
-                }
               }
+
+              private movieComingSoon() {
+                const data = {};
+                this.$services.octocat({
+                  method: &#x27;get&#x27;,
+                  data
+                }).then((res) =&gt; {
+                  console.log(&#x27;接口请求成功：&#x27; + JSON.stringify(res, null, 2));
+                }).catch((err) =&gt; {
+                  console.log(&#x27;接口请求异常：&#x27; + err);
+                });
+              }
+
             }
           &lt;/script&gt;
 
@@ -60,31 +58,26 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
   /**
    * 以下仅为事例代码，可以随意扩展修改
    */
+  import { defineComponent } from 'vue';
   // 工具类
   import { formatDate } from 'utils';
-  import { SendCode } from '@/components';
   import cat from '@icon/cat.svg';
 
-  export default {
+  export default defineComponent({
     data () {
       return {
         cat,
-        msg: 'Welcome to Your Vue.js 3.x App',
-        message: '现在时间是：' + formatDate(Date.now()),
-        start: false
+        msg: 'Welcome to Your Vue.js + TypeScript App',
+        message: `现在时间是：${formatDate(Date.now())}`
       };
     },
-    components: {
-      SendCode
-    },
-    created () {
+    mounted () {
       this.movieComingSoon();
     },
-
     methods: {
       movieComingSoon () {
         const data = {};
@@ -96,14 +89,9 @@
         }).catch((err) => {
           console.log('接口请求异常：' + err);
         });
-      },
-      sendCode () {
-        setTimeout(() => {
-          this.start = true;
-        }, 1000);
       }
     }
-  };
+  });
 </script>
 
 <style lang="less" rel="stylesheet/less">

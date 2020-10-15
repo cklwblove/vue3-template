@@ -1,14 +1,16 @@
 'use strict';
 
 const path = require('path');
-const pkg = require('./package.json');
 const webpack = require('webpack');
 const {formatDate} = require('@winner-fed/cloud-utils');
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const WebpackBar = require('webpackbar');
 const TerserPlugin = require('terser-webpack-plugin');
+const tsImportPluginFactory = require('ts-import-plugin');
+const merge = require('webpack-merge');
 const svnInfo = require('svn-info');
+const pkg = require('./package.json');
 
 const N = '\n';
 const resolve = (dir) => {
@@ -102,8 +104,7 @@ module.exports = {
    * for example GitHub pages. If you plan to deploy your site to https://foo.github.io/bar/,
    * then assetsPublicPath should be set to "/bar/".
    * In most cases please use '/' !!!
-   * Detail https://cli.vuejs.org/config/#publicPath
-   *  publicPath: process.env.NODE_ENV === 'production' ? `/${pkg.name}/` : './'
+   * Detail https://cli.vuejs.org/config/#baseurl
    */
   publicPath: './',
   assetsDir: 'static',
@@ -119,7 +120,7 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
-    }
+    },
     // 代理示例 https://webpack.docschina.org/configuration/dev-server/#devserver-proxy
     // proxy: {
     //   '/api': {
@@ -131,6 +132,13 @@ module.exports = {
     //     }
     //   }
     // }
+  },
+  pwa: {
+    name: `${pkg.name}`,
+    workboxPluginMode: 'InjectManifest',
+    workboxOptions: {
+      swSrc: path.resolve(__dirname, 'src/pwa/service-worker.js')
+    }
   },
   // css相关配置
   css: {
@@ -170,20 +178,27 @@ module.exports = {
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
   chainWebpack: (config) => {
     // module
-
-    // svg
-    // exclude icons
     config.module
-      .rule('svg')
-      .exclude.add(resolve('src/icons'))
-      .end();
-    config.module
-      .rule('icons')
-      .test(/\.svg$/)
-      .include.add(resolve('src/icons'))
-      .end()
-      .use('url-loader')
-      .loader('url-loader')
+      .rule('ts')
+      .use('ts-loader')
+      .tap(options => {
+        options = merge(options, {
+          transpileOnly: true,
+          getCustomTransformers: () => ({
+            before: [
+              tsImportPluginFactory({
+                libraryName: 'vant',
+                libraryDirectory: 'es',
+                style: true
+              })
+            ]
+          }),
+          compilerOptions: {
+            module: 'es2015'
+          }
+        });
+        return options;
+      })
       .end();
 
     config
@@ -191,9 +206,6 @@ module.exports = {
         config => config.devtool('cheap-eval-source-map')
       );
 
-    // plugin
-
-    // preload
     // runtime.js 内联的形式嵌入
     config
       .plugin('preload')
@@ -202,10 +214,11 @@ module.exports = {
         return args;
       });
 
+    // plugin
     // webpack-html-plugin
     config
       .plugin('html')
-      .tap((args) => {
+      .tap(args => {
         args[0].minify = {
           removeComments: true,
           collapseWhitespace: true,
@@ -222,12 +235,12 @@ module.exports = {
       });
 
     // optimization
+    // https://imweb.io/topic/5b66dd601402769b60847149
     config
       .when(process.env.NODE_ENV === 'production',
         config => {
           config
             .plugin('ScriptExtHtmlWebpackPlugin')
-            .after('html')
             .use('script-ext-html-webpack-plugin', [{
               // `runtime` must same as runtimeChunk name. default is `runtime`
               inline: /runtime\..*\.js$/

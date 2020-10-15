@@ -3,4 +3,5 @@
 node_modules
 /public/
 RESTFULURL.js
-/src/assets/
+vue.config.js
+src/assets/
