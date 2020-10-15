@@ -7,7 +7,6 @@ import router from './router';
 import FUNS from '@/services';
 import './router/router.interceptor';
 import './components/global';
-import './services';
 import './vendor/vant';
 import { VueSvgIconPlugin } from '@yzfe/vue3-svgicon';
 import '@yzfe/svgicon/lib/svgicon.css';
