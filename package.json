@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "node build/index.js",
+    "build": "node build/index.ts",
     "lint": "vue-cli-service lint",
     "deploy": "npm run build && npm run zip",
     "bootstrap": "yarn --registry https://registry.npm.taobao.org || npm install --registry https://registry.npm.taobao.org || cnpm install",
@@ -15,7 +15,7 @@
     "prettier": "node ./scripts/prettier.js",
     "release": "sh build/release.sh",
     "report": "vue-cli-service build --report",
-    "zip": "node build/zip.js"
+    "zip": "node build/zip.ts"
   },
   "dependencies": {
     "@winner-fed/cloud-utils": "*",
