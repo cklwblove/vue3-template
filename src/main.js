@@ -8,6 +8,7 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import { setupRouter} from './router';
 import './router/router.interceptor';
+import './components/global';
 import { setGlobalProperties } from '@/services';
 import setupSvgIcon from './icons';
 import setupVant from './vendor/vant';
