@@ -1,28 +1,25 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import 'lib-flexible';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+import 'lib-flexible';
 import { createApp } from 'vue';
 import App from './App.vue';
-import router from './router';
-import FUNS from '@/services';
+import { setupRouter} from './router';
 import './router/router.interceptor';
-import './components/global';
-import './vendor/vant';
-import { VueSvgIconPlugin } from '@yzfe/vue3-svgicon';
-import '@yzfe/svgicon/lib/svgicon.css';
+import { setGlobalProperties } from '@/services';
+import setupSvgIcon from './icons';
+import setupVant from './vendor/vant';
 
 import './assets/style/app.less';
 
 const app = createApp(App);
 
-app.config.globalProperties.$services = FUNS;
-
-// use 插件
-app
-  .use(router)
-  .use(VueSvgIconPlugin, {
-    tagName: 'svg-icon'
-  });
+setGlobalProperties(app);
+setupVant(app);
+setupSvgIcon(app);
+setupRouter(app);
 
 // 挂载
 app.mount('#app');
