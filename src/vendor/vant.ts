@@ -1,6 +1,6 @@
 import { Button } from 'vant';
 
-export default function setupVant(app) {
+export default function setupVendor (app) {
   // 按需引用
   app
     .use(Button);
