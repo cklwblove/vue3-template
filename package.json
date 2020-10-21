@@ -28,7 +28,7 @@
     "normalize.css": "8.0.1",
     "register-service-worker": "^1.7.1",
     "vant": "^3.0.0-beta.3",
-    "vue": "^3.0.0",
+    "vue": "^3.0.2",
     "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
